@@ -26,7 +26,11 @@ export function SignInForm() {
     setLoading(false);
 
     if (res?.error) {
-      setError('Invalid email or password. Please try again.');
+      setError(
+        res.error === 'CredentialsSignin'
+          ? 'Invalid email or password. Please try again.'
+          : res.error
+      );
     } else {
       window.location.href = '/dashboard';
     }

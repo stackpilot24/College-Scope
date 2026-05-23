@@ -25,10 +25,14 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email },
         });
 
-        if (!user || !user.password) return null;
+        if (!user) return null;
+
+        if (!user.password) {
+          throw new Error('This email is registered via Google. Please use "Continue with Google".');
+        }
 
         const valid = await bcrypt.compare(credentials.password, user.password);
-        if (!valid) return null;
+        if (!valid) throw new Error('Incorrect password. Please try again.');
 
         return { id: user.id, email: user.email, name: user.name, image: user.image };
       },

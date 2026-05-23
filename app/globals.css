@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    @apply text-gray-900 bg-white;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200;
+  }
+
+  .btn-primary {
+    @apply bg-brand-secondary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium;
+  }
+
+  .btn-outline {
+    @apply border border-brand-secondary text-brand-secondary px-4 py-2 rounded-lg hover:bg-brand-light transition-colors duration-200 font-medium;
+  }
+
+  .input-base {
+    @apply w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-secondary outline-none transition-shadow;
+  }
+
+  .badge-base {
+    @apply px-2 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .section-title {
+    @apply text-2xl font-bold text-gray-900 mb-1;
+  }
+
+  .section-subtitle {
+    @apply text-gray-500 text-sm;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}

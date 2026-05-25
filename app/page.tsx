@@ -8,7 +8,12 @@ import { FeaturedColleges } from '@/components/home/FeaturedColleges';
 import { getFeaturedColleges } from '@/lib/api';
 
 export default async function HomePage() {
-  const session = await getServerSession(authOptions);
+  let session = null;
+  try {
+    session = await getServerSession(authOptions);
+  } catch (err) {
+    console.error('[home] getServerSession failed:', err);
+  }
   if (session?.user) redirect('/dashboard');
 
   const featured = await getFeaturedColleges(6);

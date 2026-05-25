@@ -2,7 +2,10 @@
 
 India's college discovery platform — search and compare 170+ colleges, track entrance exams, find scholarships, and get AI-powered guidance from **YARA**.
 
-Built with **Next.js 14**, **Prisma**, **Supabase**, **NextAuth**, and **Gemini AI**.
+**Live:** [college-scope-sage.vercel.app](https://college-scope-sage.vercel.app)
+
+Built with **Next.js 14**, **Prisma 7**, **Supabase**, **NextAuth v4**, and **Gemini AI**.
+
 <img width="1919" height="887" alt="image" src="https://github.com/user-attachments/assets/8f490559-b3cc-409c-af0b-d0d1d61821d6" />
 
 <img width="1898" height="801" alt="image" src="https://github.com/user-attachments/assets/edc3937f-4cce-4ab1-ae54-2197ce933b45" />
@@ -22,7 +25,7 @@ Built with **Next.js 14**, **Prisma**, **Supabase**, **NextAuth**, and **Gemini 
 - **College Q&A** — Ask questions per college; other students and alumni can answer
 - **YARA AI Assistant** — Gemini-powered floating chat for college, exam, and career guidance
 - **Admin Panel** — Manage colleges, moderate reviews, manage users, promote admins
-- **Authentication** — Email/password signup + Google OAuth via NextAuth
+- **Authentication** — Email/password signup and signin via NextAuth
 
 ---
 
@@ -35,7 +38,7 @@ Built with **Next.js 14**, **Prisma**, **Supabase**, **NextAuth**, and **Gemini 
 | Styling | TailwindCSS |
 | Database | PostgreSQL via Supabase |
 | ORM | Prisma 7 with `@prisma/adapter-pg` |
-| Auth | NextAuth v4 — Credentials + Google OAuth |
+| Auth | NextAuth v4 — Credentials (email/password) |
 | AI | Google Gemini 2.5 Flash (streaming) |
 | Deployment | Vercel |
 
@@ -46,27 +49,27 @@ Built with **Next.js 14**, **Prisma**, **Supabase**, **NextAuth**, and **Gemini 
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/collegescope.git
-cd collegescope
+git clone https://github.com/stackpilot24/College-Scope.git
+cd College-Scope
 npm install
 ```
 
 ### 2. Set up environment variables
 
-Create a `.env.local` file in the root with the following:
+Create a `.env.local` file in the root:
 
 ```env
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/postgres"
 NEXTAUTH_SECRET="your-random-secret"
 NEXTAUTH_URL="http://localhost:3000"
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
 GEMINI_API_KEY="your-gemini-api-key"
 ```
 
-- **Supabase DB**: [supabase.com](https://supabase.com) → Project → Settings → Database → Connection string (Session mode, port 5432)
-- **Google OAuth**: [console.cloud.google.com](https://console.cloud.google.com) → APIs & Services → Credentials
-- **Gemini API key**: [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) (free)
+**Getting each value:**
+
+- **DATABASE_URL (local dev)** — [supabase.com](https://supabase.com) → Project → Settings → Database → Connection string → **Session mode (port 5432)**
+- **NEXTAUTH_SECRET** — Run `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` in your terminal
+- **GEMINI_API_KEY** — [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) (free tier available)
 
 ### 3. Set up the database
 
@@ -88,7 +91,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ## Project Structure
 
 ```
-collegescope/
+College-Scope/
 ├── app/
 │   ├── page.tsx                  # Landing page (public)
 │   ├── layout.tsx                # Root layout with YARA chat
@@ -98,7 +101,7 @@ collegescope/
 │   ├── compare/                  # Side-by-side college comparison
 │   ├── dashboard/                # User dashboard (saved colleges)
 │   ├── admin/                    # Admin panel (ADMIN role only)
-│   └── api/                      # API routes
+│   └── api/
 │       ├── auth/                 # NextAuth + registration
 │       ├── colleges/             # College CRUD
 │       ├── reviews/              # Review CRUD
@@ -108,16 +111,18 @@ collegescope/
 │       └── admin/                # Admin management APIs
 ├── components/
 │   ├── yara/YaraChat.tsx         # YARA floating AI chat
+│   ├── auth/                     # SignInForm, SignUpForm
 │   ├── admin/                    # Admin panel components
 │   ├── detail/                   # College detail tab components
 │   ├── layout/                   # Navbar, Footer
 │   └── ui/                       # Shared UI components
 ├── lib/
 │   ├── auth.ts                   # NextAuth config
-│   ├── prisma.ts                 # Prisma singleton client
+│   ├── prisma.ts                 # Prisma client (pg.Pool, max: 1 for serverless)
 │   ├── examData.ts               # Static entrance exam data
 │   └── scholarshipData.ts        # Static scholarship data
 ├── middleware.ts                 # Route protection (auth required)
+├── prisma.config.mjs             # Prisma 7 datasource config
 └── prisma/
     ├── schema.prisma             # Database schema
     └── seed.ts                   # 170+ college seed data
@@ -125,22 +130,30 @@ collegescope/
 
 ---
 
-## Deployment
+## Deployment on Vercel
 
-### Vercel (recommended)
+1. Push to GitHub
+2. Import repo at [vercel.com/new](https://vercel.com/new)
+3. Add these environment variables **before** deploying:
 
-```bash
-npm install -g vercel
-vercel --prod
-```
+| Key | Value |
+|---|---|
+| `DATABASE_URL` | Supabase **Transaction mode** pooler URL (port **6543**) |
+| `NEXTAUTH_SECRET` | Random 32-char hex string |
+| `NEXTAUTH_URL` | Your Vercel domain (e.g. `https://your-app.vercel.app`) |
+| `GEMINI_API_KEY` | Gemini API key |
 
-Add all environment variables in the Vercel dashboard under **Settings → Environment Variables**. Set `NEXTAUTH_URL` to your Vercel domain.
+> **Important:** Use the Supabase **Transaction mode** pooler URL (port 6543) for `DATABASE_URL` on Vercel — not the direct connection URL. This avoids connection pool exhaustion in serverless environments.
+>
+> Get it from: Supabase → Settings → Database → Connection Pooling → Transaction mode
+
+4. Deploy
 
 ---
 
 ## Admin Access
 
-1. Sign up for an account at `/auth/signup`
+1. Sign up at `/auth/signup`
 2. Visit `/admin/setup` to claim the first admin role
 3. Sign out and sign back in
 4. Access the admin panel at `/admin`

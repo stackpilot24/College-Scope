@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
-import { GoogleButton } from './GoogleButton';
 
 export function SignInForm() {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -38,14 +37,6 @@ export function SignInForm() {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <GoogleButton callbackUrl="/dashboard" />
-
-      <div className="flex items-center gap-3 my-5">
-        <div className="flex-1 h-px bg-gray-200" />
-        <span className="text-xs text-gray-400 font-medium">or continue with email</span>
-        <div className="flex-1 h-px bg-gray-200" />
-      </div>
-
       {error && (
         <div className="mb-4 flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl p-3">
           <AlertCircle className="w-4 h-4 shrink-0" />

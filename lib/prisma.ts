@@ -20,10 +20,11 @@ function createClient(): PrismaClient {
       user: decodeURIComponent(url.username),
       password: decodeURIComponent(url.password),
       ssl: url.hostname === 'localhost' ? false : { rejectUnauthorized: false },
+      max: 1, // serverless: one connection per function instance
+      idleTimeoutMillis: 10000,
     });
   } catch {
-    // Fallback: pass the raw string and hope for the best
-    pool = new pg.Pool({ connectionString, ssl: { rejectUnauthorized: false } });
+    pool = new pg.Pool({ connectionString, ssl: { rejectUnauthorized: false }, max: 1 });
   }
 
   const adapter = new PrismaPg(pool);

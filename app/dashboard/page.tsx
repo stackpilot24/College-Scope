@@ -32,12 +32,24 @@ export default async function DashboardPage() {
     }),
   ]);
 
+  const serializeCollege = (c: typeof topColleges[0]) => ({
+    id: c.id, name: c.name, slug: c.slug, city: c.city, state: c.state,
+    type: c.type, rating: c.rating, reviewCount: c.reviewCount,
+    feesMin: c.feesMin, feesMax: c.feesMax, image: c.image, logo: c.logo,
+    courses: c.courses.map(({ id, name }) => ({ id, name })),
+    placement: c.placement ? { averagePackage: c.placement.averagePackage, placementRate: c.placement.placementRate } : null,
+  });
+
   return (
     <DashboardClient
       user={session.user}
-      savedColleges={savedColleges.map((s) => s.college)}
-      recentReviews={recentReviews.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() }))}
-      topColleges={topColleges}
+      savedColleges={savedColleges.map((s) => serializeCollege(s.college))}
+      recentReviews={recentReviews.map((r) => ({
+        id: r.id, rating: r.rating, comment: r.comment, year: r.year, course: r.course,
+        createdAt: r.createdAt.toISOString(),
+        college: { name: r.college.name, slug: r.college.slug, image: r.college.image },
+      }))}
+      topColleges={topColleges.map(serializeCollege)}
     />
   );
 }

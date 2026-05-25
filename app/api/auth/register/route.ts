@@ -28,9 +28,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ user }, { status: 201 });
   } catch (err) {
-    const msg = process.env.NODE_ENV === 'development'
-      ? `DB error: ${err instanceof Error ? err.message : String(err)}`
-      : 'Something went wrong. Please try again.';
+    const msg = `DB error: ${err instanceof Error ? err.message : String(err)}`;
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

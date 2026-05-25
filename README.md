@@ -3,6 +3,11 @@
 India's college discovery platform — search and compare 170+ colleges, track entrance exams, find scholarships, and get AI-powered guidance from **YARA**.
 
 Built with **Next.js 14**, **Prisma**, **Supabase**, **NextAuth**, and **Gemini AI**.
+<img width="1919" height="887" alt="image" src="https://github.com/user-attachments/assets/8f490559-b3cc-409c-af0b-d0d1d61821d6" />
+
+<img width="1898" height="801" alt="image" src="https://github.com/user-attachments/assets/edc3937f-4cce-4ab1-ae54-2197ce933b45" />
+
+<img width="1919" height="894" alt="image" src="https://github.com/user-attachments/assets/490072de-a2c8-4228-964b-757f95600e15" />
 
 ---
 

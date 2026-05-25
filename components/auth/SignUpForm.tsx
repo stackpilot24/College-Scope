@@ -2,13 +2,11 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Eye, EyeOff, Mail, Lock, User, AlertCircle, CheckCircle } from 'lucide-react';
 import { GoogleButton } from './GoogleButton';
 
 export function SignUpForm() {
-  const router = useRouter();
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'STUDENT' });
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
@@ -42,8 +40,7 @@ export function SignUpForm() {
       redirect: false,
     });
 
-    router.push('/dashboard');
-    router.refresh();
+    window.location.href = '/dashboard';
   };
 
   if (success) {
